@@ -1,0 +1,84 @@
+
+// Definitions //////////////////////////////////////////////////////////////
+
+{
+
+    // A git material
+    git: function(name, url, dest) {
+	url: url, type: "git", name: name, destination: dest
+    },
+
+    // A material which depends on a previous pipeline
+    pipeline_material: function(name, pipeline, stage) {
+	pipeline: pipeline, stage: stage, name: name, type: "dependency"
+    },
+
+    // A pipeline parameter
+    parameter: function(n, v) { name: n, value: v },
+
+    // Task which fetches an artefact from a previous pipeline.
+    fetch: function(pipeline, stage, job, source) {
+	type: "fetch", run_if: "any",
+	pipeline: pipeline, stage: stage, job: job, source: source,
+	is_source_a_file: false,
+    },
+
+    // Allows to toggle the fetch source being a file.
+    is_a_file: function(t) { is_source_a_file: t },
+
+    // Mixin, declares the directory for a fetch task.
+    destination: function(d) { destination: d },
+
+    // Task executes a command.
+    exec: function(cmd, args) {
+	type: "exec",
+	command: cmd, arguments: args,
+	working_directory: null
+    },
+
+    // Mixin, declares the working_directory for an exec task.
+    directory: function(d) { working_directory: d },
+
+    // Short-hand task to execute make.
+    make: function(args) self.exec("make", args),
+
+    // Defines a pipeline
+    pipeline: function(name, group) {
+	format_version: 1,
+	name: name,
+	group: group,
+	environment_variables: []
+    },
+
+    // Defines a stage.
+    stage: function(name) {
+	name: name,
+	fetch_materials: true,
+	never_cleanup_artifacts: false,
+	clean_working_directory: false,
+	environment_variables: []
+    },
+
+    // Defines a job.
+    job: function(name) {
+	name: name, resources: [], tabs: [], artifacts: [],
+	properties: [], run_instance_count: null, timeout: 0
+    },
+
+    // Declares a stage requires manual approval.
+    manual_approval: function() {
+	approval: {
+	    type: "manual"
+	}
+    },
+
+    // An artifact
+    artifact: function(source, type) { source: source, type: type },
+
+    // A job tab, used to display an artefact
+    tab: function(name, path) { name: name, path: path },
+
+    // Environment Vars
+    envvar: function(name, value)
+       { environment_variables: [{ name: name, value: value }] }
+}
