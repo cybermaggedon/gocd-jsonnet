@@ -1,0 +1,7 @@
+
+Some template code I use, makes it easier to use JSonnet to create
+GoCD configuration.
+
+See the example.gopipeline.jsonnet code, convert this to JSON, and
+read up on the GoCD plugin which reads JSON config from a git repo.
+
